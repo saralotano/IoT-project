@@ -9,6 +9,7 @@ import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP.Code;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.coap.Request;
 
 
@@ -67,9 +68,11 @@ public class ProxyClient {
 	        		
 	        	}	
 	
+	        	
 	        	public void onError(){
-	        		System.err.println("-Failed--------");
+	        		//System.err.println("-Failed--------");
 	        	}
+	        	
 	
 	        };
 	        	        	        
@@ -82,6 +85,8 @@ public class ProxyClient {
 		Request request1 = new Request(Code.GET);
 		request1.setURI(Config.IPv6_SERVER_1);
 		request1.setObserve();
+		//provare la riga successiva
+		request1.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
 		client.observe(request1, handler);
 		
 		Request request2 = new Request(Code.GET);
