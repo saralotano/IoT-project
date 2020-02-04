@@ -1,6 +1,5 @@
 package code;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class MainClass {
@@ -11,12 +10,12 @@ public class MainClass {
 	public static void main(String args[]){
 		
 		//------------------------SERVER--------------------------------------
-		Resource r = new Resource("prova");
-		ResourceInfo info = new ResourceInfo(23.4, LocalDateTime.now(), "Cel");
+		//Resource r = new Resource("prova");
+		//ResourceInfo info = new ResourceInfo(23.4, LocalDateTime.now(), "Cel");
 		
-		cache.put(r.getName(), info);
+		//cache.put(r.getName(), info);
 						
-		server.add(r);		
+		//server.add(r);		
 		server.start();
 		
 		//------------------------CLIENT--------------------------------------
