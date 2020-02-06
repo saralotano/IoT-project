@@ -23,46 +23,51 @@ public class ProxyClient {
 			
 	        	public void onLoad(CoapResponse response){
 	        		String resourceName = response.advanced().getSource().toString().substring(1); //il primo carattere è un /, con substring(1) lo rimuovo
-	        		        		
-	        		ResourceInfo info = MainClass.cache.get(resourceName);
-	        		        		
-	        		JSONParser parser = new JSONParser();
-	        		Double value = 0.0;
-	        		try {
-						JSONObject json = (JSONObject) parser.parse(response.getResponseText().toString());
-						value = Double.parseDouble(json.get("value").toString());
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	        	
-	        		if(info == null){ //primo valore da memorizzare	        			
-	        			info = new ResourceInfo(value, LocalDateTime.now(), "Cel"); //non so se Cel ha senso così hardcodato	        			
-	        			MainClass.cache.put(resourceName, info);
-	        			
-	        			Resource newResource = new Resource(resourceName);
-	        			MainClass.server.add(newResource);
-	        			
-	        			System.out.println("Inserita nuova risorsa");
-	        			System.out.println("Nome risorsa " + resourceName);
-	        			System.out.println("Valore risorsa " + info.getValue());
+	        		if(!response.advanced().isError()) {
+	        			ResourceInfo info = MainClass.cache.get(resourceName);
+		        		
+		        		JSONParser parser = new JSONParser();
+		        		Double value = 0.0;
+		        		try {
+							JSONObject json = (JSONObject) parser.parse(response.getResponseText().toString());
+							value = Double.parseDouble(json.get("value").toString());
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		        	
+		        		if(info == null){ //primo valore da memorizzare	        			
+		        			info = new ResourceInfo(value, LocalDateTime.now(), "Cel"); //non so se Cel ha senso così hardcodato	        			
+		        			MainClass.cache.put(resourceName, info);
+		        			
+		        			Resource newResource = new Resource(resourceName);
+		        			// Add a new resource to the server. If the client ask for it now is available
+		        			MainClass.server.add(newResource);
+		        			
+		        			System.out.println("Inserita nuova risorsa");
+		        			System.out.println("Nome risorsa " + resourceName);
+		        			System.out.println("Valore risorsa " + info.getValue());
+		        		}
+		        		
+		        		else{ 
+		        			if(info != null && !info.getValue().equals(response.getResponseText())){ //aggiorno il nuovo valore
+		        				System.out.println("Aggiorno un nuovo valore");
+		        				info.setValue(value);
+			        			info.setTime(LocalDateTime.now());
+			        			info.setUnit("Cel"); //non so se va bene così hardcodato
+		        			
+		        			}
+		        			else {
+		        				System.out.println("Aggiorno il timestamp del vecchio valore");
+			        			info.setTime(LocalDateTime.now());
+			        		}
+		        			
+		        			MainClass.cache.replace(response.advanced().getSource().toString(), info);
+		        		}
+	        		} else {
+	        			System.out.println("ERROR CODE: "+response.getCode().toString()+"\n"+response.getResponseText());
 	        		}
 	        		
-	        		else{ 
-	        			if(info != null && !info.getValue().equals(response.getResponseText())){ //aggiorno il nuovo valore
-	        				System.out.println("Aggiorno un nuovo valore");
-	        				info.setValue(value);
-		        			info.setTime(LocalDateTime.now());
-		        			info.setUnit("Cel"); //non so se va bene così hardcodato
-	        			
-	        			}
-	        			else {
-	        				System.out.println("Aggiorno il timestamp del vecchio valore");
-		        			info.setTime(LocalDateTime.now());
-		        		}
-	        			
-	        			MainClass.cache.replace(response.advanced().getSource().toString(), info);
-	        		}
 	        		
 	        	}	
 	
@@ -81,7 +86,19 @@ public class ProxyClient {
 	
 	private static void startConnections(CoapHandler handler){
 		int sec = 3000;
-		
+		Request request = new Request(Code.GET);
+		for(int i = 0; i < Config.uri.size(); i++) {
+			request.setURI(Config.uri.get(i));
+			request.setObserve();
+			request.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
+			client.observe(request, handler);
+			try {
+				Thread.sleep(sec);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}	
+		/*
 		Request request1 = new Request(Code.GET);
 		request1.setURI(Config.IPv6_SERVER_1);
 		request1.setObserve();
@@ -89,8 +106,8 @@ public class ProxyClient {
 		request1.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
 		try {
 			client.observe(request1, handler);
-			Thread.sleep(sec);
 			
+			Thread.sleep(sec);
 			Request request2 = new Request(Code.GET);
 			request2.setURI(Config.IPv6_SERVER_2);
 			request2.setObserve();
@@ -258,11 +275,12 @@ public class ProxyClient {
 			request30.setURI(Config.IPv6_SERVER_10);
 			request30.setObserve();
 			client.observe(request30, handler);
-			*/
+			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 	}
 	
 	
