@@ -26,9 +26,11 @@ public class Config {
 	protected static final String IPv6_SERVER_23 = "coap://[abcd::218:18:18:18]:5683/test/value";
 	protected static final String IPv6_SERVER_24 = "coap://[abcd::219:19:19:19]:5683/test/value";
 	protected static final String IPv6_SERVER_25 = "coap://[abcd::21a:1a:1a:1a]:5683/test/value";
+	/*
 	protected static final String IPv6_SERVER_26 = "coap://[abcd::21b:1b:1b:1b]:5683/test/value";
 	protected static final String IPv6_SERVER_27 = "coap://[abcd::21c:1c:1c:1c]:5683/test/value";
 	protected static final String IPv6_SERVER_28 = "coap://[abcd::21d:1d:1d:1d]:5683/test/value";
 	protected static final String IPv6_SERVER_29 = "coap://[abcd::21e:1e:1e:1e]:5683/test/value";
 	protected static final String IPv6_SERVER_30 = "coap://[abcd::21f:1f:1f:1f]:5683/test/value";
+	*/
 }
