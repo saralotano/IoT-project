@@ -70,10 +70,9 @@ public class ProxyClient {
 	        		
 	        		
 	        	}	
-	
 	        	
 	        	public void onError(){
-	        		//System.err.println("-Failed--------");
+	        		System.err.println("-Failed--------");
 	        	}
 	        	
 	
