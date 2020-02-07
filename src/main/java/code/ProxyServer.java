@@ -12,8 +12,7 @@ import org.json.JSONObject;
 
 public class ProxyServer extends CoapServer{
 	
-	
-	protected static HashMap<String, String> cache = new HashMap<String, String>();
+	//protected static HashMap<String, String> cache = new HashMap<String, String>();
 	
 	private static String parseRequest(String request){
 		

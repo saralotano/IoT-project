@@ -1,6 +1,38 @@
 package code;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Config {
+	static List<String> uri = new ArrayList<String>();
+	static{
+		uri.add("coap://[abcd::c30c:0:0:2]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:3]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:4]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:5]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:6]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:7]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:8]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:9]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:a]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:b]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:c]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:d]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:e]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:f]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:10]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:11]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:12]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:13]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:14]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:15]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:16]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:17]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:18]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:19]:5683/value");
+		uri.add("coap://[abcd::c30c:0:0:1a]:5683/value");
+	}
+	/*
 	protected static final String IPv6_SERVER_1  = "coap://[abcd::202:2:2:2]:5683/test/value";
 	protected static final String IPv6_SERVER_2  = "coap://[abcd::203:3:3:3]:5683/test/value";
 	protected static final String IPv6_SERVER_3  = "coap://[abcd::204:4:4:4]:5683/test/value";
@@ -26,9 +58,11 @@ public class Config {
 	protected static final String IPv6_SERVER_23 = "coap://[abcd::218:18:18:18]:5683/test/value";
 	protected static final String IPv6_SERVER_24 = "coap://[abcd::219:19:19:19]:5683/test/value";
 	protected static final String IPv6_SERVER_25 = "coap://[abcd::21a:1a:1a:1a]:5683/test/value";
+	/*
 	protected static final String IPv6_SERVER_26 = "coap://[abcd::21b:1b:1b:1b]:5683/test/value";
 	protected static final String IPv6_SERVER_27 = "coap://[abcd::21c:1c:1c:1c]:5683/test/value";
 	protected static final String IPv6_SERVER_28 = "coap://[abcd::21d:1d:1d:1d]:5683/test/value";
 	protected static final String IPv6_SERVER_29 = "coap://[abcd::21e:1e:1e:1e]:5683/test/value";
 	protected static final String IPv6_SERVER_30 = "coap://[abcd::21f:1f:1f:1f]:5683/test/value";
+	*/
 }
