@@ -1,6 +1,8 @@
 package code;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.TimeZone;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,22 +27,32 @@ public class ProxyClient {
 	        		String resourceName = response.advanced().getSource().toString().substring(1); //il primo carattere è un /, con substring(1) lo rimuovo
 	        		if(!response.advanced().isError()) {
 	        			ResourceInfo info = MainClass.cache.get(resourceName);
-	        			System.out.println("Nome risorsa: "+resourceName+"\nInfo: "+info.toString());
-	        			
+	        			System.out.println("Nome risorsa: "+resourceName);
+	        				        			
 		        		
 		        		JSONParser parser = new JSONParser();
 		        		Double value = 0.0;
+		        		String unit = "";
+		        		long seconds = 0;
+		        		LocalDateTime timestamp = null;
 		        		try {
 		        			System.out.println(response.getResponseText().toString());
 							JSONObject json = (JSONObject) parser.parse(response.getResponseText().toString());
-							value = Double.parseDouble(json.get("value").toString());
+							value = Double.parseDouble(json.get("v").toString());
+							unit = json.get("u").toString();
+							seconds = Long.parseLong(json.get("t").toString());
+							timestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(seconds), 
+									TimeZone.getDefault().toZoneId());
+							System.out.println("Received: {value="+value+"unit="+unit+"seconds="+seconds
+									+"timestamp="+timestamp+"}");
+							
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 		        	
 		        		if(info == null){ //primo valore da memorizzare	        			
-		        			info = new ResourceInfo(value, LocalDateTime.now(), "Cel"); //non so se Cel ha senso così hardcodato	        			
+		        			info = new ResourceInfo(value, timestamp, unit); //non so se Cel ha senso così hardcodato	        			
 		        			MainClass.cache.put(resourceName, info);
 		        			
 		        			Resource newResource = new Resource(resourceName);
@@ -52,7 +64,7 @@ public class ProxyClient {
 		        			System.out.println("Valore risorsa " + info.getValue());
 		        		}
 		        		
-		        		else{ 
+		        		else{
 		        			if(info != null && !info.getValue().equals(response.getResponseText())){ //aggiorno il nuovo valore
 		        				System.out.println("Aggiorno un nuovo valore");
 		        				info.setValue(value);
