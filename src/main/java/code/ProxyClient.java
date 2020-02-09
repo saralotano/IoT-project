@@ -25,10 +25,13 @@ public class ProxyClient {
 	        		String resourceName = response.advanced().getSource().toString().substring(1); //il primo carattere è un /, con substring(1) lo rimuovo
 	        		if(!response.advanced().isError()) {
 	        			ResourceInfo info = MainClass.cache.get(resourceName);
+	        			System.out.println("Nome risorsa: "+resourceName+"\nInfo: "+info.toString());
+	        			
 		        		
 		        		JSONParser parser = new JSONParser();
 		        		Double value = 0.0;
 		        		try {
+		        			System.out.println(response.getResponseText().toString());
 							JSONObject json = (JSONObject) parser.parse(response.getResponseText().toString());
 							value = Double.parseDouble(json.get("value").toString());
 						} catch (ParseException e) {
