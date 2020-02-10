@@ -19,7 +19,7 @@ public class Client {
 		URI uri = null;
 
 		try{
-			uri = new URI("coap://localhost"); //proxy server
+			uri = new URI("coap://localhost"); //proxy
 		} catch (Exception e) {
  			System.err.println("Caught Exception: " + e.getMessage());
 		}	 
@@ -31,32 +31,36 @@ public class Client {
         	BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in)); 
         	
         	System.out.println("Insert resource URI: (e.g. coap://localhost/temperature_02)");
-            //String requestedResource = stdin.readLine();
-            String resourceName = stdin.readLine().split("/")[3]; //considero solamente "temperature_02"
-            System.out.println("nome " + resourceName);
-            
-            Request req = new Request(Code.GET);
-            req.getOptions().addUriPath(resourceName);                      
-            CoapResponse response = client.advanced(req);	//send GET request to proxy server
-                    	
-        	if (response!=null) {
-    			
-    			if(response.getCode().toString().equals("2.05")){ //ok			
-    				
-    				JSONObject json = new JSONObject(response.getResponseText()); // Convert text to object
-        			System.out.println("Resource: \n" + json.toString(4)); //4 è lo spazio di indentazione
-        			
-    			}
-    			else{
-    				System.out.println("ERROR. Something wrong happened. \n");
-    			}
-    					
-    		} 
+        	String input = stdin.readLine();
         	
-        	else {
-    			System.out.println("No response received. \n");
-    		}
-            	          
+        	if(input.equals("exit")){
+        		System.out.println("Client terminated");
+        		System.exit(0);
+        	}
+        	
+        	else{
+        		
+        		if(input.split("/").length == 4) { // vuol dire che il pattern è stato rispettato
+                		
+            		String resourceName =input.split("/")[3]; //considero solamente "temperature_02"
+                    
+                    Request req = new Request(Code.GET);
+                    req.getOptions().addUriPath(resourceName);                      
+                    CoapResponse response = client.advanced(req);	//send GET request to proxy server
+                    
+                    if(response.isSuccess()){
+                    	
+                    	JSONObject json = new JSONObject(response.getResponseText()); // Convert text to object
+            			System.out.println("Resource: \n" + json.toString(4)); //4 è lo spazio di indentazione
+                    }
+                    
+                    else{             	
+                    	System.out.println("ERROR " + response.getCode().name() + ". Try again.");
+                    	
+                    }
+            	}
+        	}
+
         }
 	}
 	

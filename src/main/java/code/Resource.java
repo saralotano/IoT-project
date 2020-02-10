@@ -11,49 +11,36 @@ public class Resource extends CoapResource{
 	
 	public Resource (String name){
 		super(name);
-		//setObservable(true);
 	}
-	
-	private static String parseRequest(String request){
 		
-		JSONObject obj = new JSONObject(request);
-		System.out.println("uri - path " + obj.getString("Uri-Path"));
-		return  obj.getString("Uri-Path");
-
-	}
-	
-	private static String createGETResponse(String key){
+	private static String retrieveResource(String key){
 		
 		ServerResource info = MainClass.cache.get(key);
+		String res;
 		
-		//controllare errori json, controllare se info restituisce un valore null
-		
-		JSONObject json = new JSONObject();
-		
-		json.put("n", info.getName());
-		//json.put("t", info.getTime());
-		json.put("v", info.getValue());
-		
-		return json.toString();
+		if(info != null && info.getValue() == -1){
+			info.getRelation().proactiveCancel();			
+			MainClass.client.restartObservation(key);
+			res = "Starting new observation on the requested resource. Please try after a while.";
+		}
+		else{
+			JSONObject json = new JSONObject();			
+			json.put("n", info.getName());
+			json.put("v", info.getValue());
+			res = json.toString();
+		}
+		return res;
 	}
 	
-	public void handleGET (CoapExchange exchange) {
-		//ProxyServer.handleGET(exchange);		
-		
-		//l'output è questo {"Uri-Host":"localhost", "Uri-Path":"prova"}
-		String resource = parseRequest(exchange.getRequestOptions().toString());
-		System.out.println("Requested resource " + resource);
-		
-		//String hashkey = resource.split("_")[1]; //in questo modo prendo il numero della risorsa. Ad esempio: "02"
-		
-		String msg = createGETResponse(resource.split("_")[1]); //in questo modo prendo il numero della risorsa. Ad esempio: "02"		
 	
-		//gestire il caso in cui la msg dia un errore. o lo faccio adesso o lo faccio nella createGET response
+	public void handleGET(CoapExchange exchange) {
 		
-		//creo la risposta solo se ho qualcosa da inviare
+		String resource = (new JSONObject(exchange.getRequestOptions().toString())).getString("Uri-Path");
+		String requestedResource = retrieveResource(resource.split("_")[1]); //in questo modo prendo il numero della risorsa. Ad esempio: "02"		
+	
 		Response response = new Response(ResponseCode.CONTENT);
 		response.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON);
-		response.setPayload(msg);
+		response.setPayload(requestedResource);
 		exchange.respond(response);
 	}
 	
