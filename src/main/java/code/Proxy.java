@@ -13,7 +13,7 @@ public class Proxy{
 	
 	protected void start(){
 		
-		int sec = 1000; //inviamo una richiesta al secondo, in modo da non sovraccaricare la rete
+		int sec = 1000; //only one observation request for second
 		
 		Request request;		
 		ServerResource resource;
@@ -27,26 +27,25 @@ public class Proxy{
 			
 			resource = new ServerResource(client.observe(request, handler));
 			
-			if(i < 14){ 
-				//aggiunge lo 0 davanti alle cifre tra 2 e f
-				//in questo modo la chiave dell'hashmap sarà costituita sempre da due caratteri e sarà più facile fare il parse
+			//the key used in the cache will be a string representing the numbers between "02" and "1a" 
+			if(i < 14)
 				MainClass.cache.put("0"+Integer.toHexString(i+2), resource);
-			}
+			
 			else
 				MainClass.cache.put(Integer.toHexString(i+2), resource);
-			
-			
+						
 			try {
 				Thread.sleep(sec);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
-			
+			}			
 		}
 			
 	}
 	
 	protected void restartObservation(String resourceName){
+		
+		//resourceName is a string representing one number between "02" and "1a" 
 		String uri = "coap://[abcd::c30c:0:0:"+resourceName+"]:5683/temperature";
 					
 		Request request = new Request(Code.GET);
@@ -54,8 +53,10 @@ public class Proxy{
 		request.setObserve();
 		request.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
 		
-		ServerResource resource = new ServerResource(client.observe(request, handler));
-		MainClass.cache.put(resourceName, resource);
+		ServerResource resource = MainClass.cache.get(resourceName);
+		resource.setRelation(client.observe(request, handler));
+		MainClass.cache.replace(resourceName, resource);
+		
 	}
 	
 }

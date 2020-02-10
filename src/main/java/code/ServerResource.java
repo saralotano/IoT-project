@@ -13,11 +13,11 @@ public class ServerResource {
 		value = -1;
 		name = "";
 	}
-			
+		
 	protected CoapObserveRelation getRelation(){
 		return this.relation;
 	}
-	
+		
 	protected Integer getValue(){
 		return this.value;
 	}

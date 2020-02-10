@@ -19,7 +19,7 @@ public class Client {
 		URI uri = null;
 
 		try{
-			uri = new URI("coap://localhost"); //proxy
+			uri = new URI("coap://localhost"); //Proxy Server
 		} catch (Exception e) {
  			System.err.println("Caught Exception: " + e.getMessage());
 		}	 
@@ -36,31 +36,30 @@ public class Client {
         	if(input.equals("exit")){
         		System.out.println("Client terminated");
         		System.exit(0);
-        	}
-        	
+        	}       	
         	else{
         		
-        		if(input.split("/").length == 4) { // vuol dire che il pattern è stato rispettato
+        		if(input.split("/").length == 4) { //resource uri pattern has been respected
                 		
-            		String resourceName =input.split("/")[3]; //considero solamente "temperature_02"
+            		String resourceName = input.split("/")[3]; //take only the last part of the URI. For example: "temperature_02"
                     
                     Request req = new Request(Code.GET);
                     req.getOptions().addUriPath(resourceName);                      
-                    CoapResponse response = client.advanced(req);	//send GET request to proxy server
+                    CoapResponse response = client.advanced(req); //send GET request to proxy server
                     
                     if(response.isSuccess()){
                     	
-                    	JSONObject json = new JSONObject(response.getResponseText()); // Convert text to object
-            			System.out.println("Resource: \n" + json.toString(4)); //4 è lo spazio di indentazione
+                    	JSONObject json = new JSONObject(response.getResponseText()); // Convert text to JSON object
+            			System.out.println("Resource: \n" + json.toString(4));
                     }
                     
-                    else{             	
+                    else{    
+                    	
                     	System.out.println("ERROR " + response.getCode().name() + ". Try again.");
                     	
                     }
             	}
         	}
-
         }
 	}
 	

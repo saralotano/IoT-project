@@ -19,44 +19,41 @@ public class ResourceHandler implements CoapHandler{
     		try {
 				JSONObject json = (JSONObject) parser.parse(response.getResponseText().toString());
 				uri = json.get("n").toString();
-				hashkey = uri.substring(14); //estraggo gli ultimi due caratteri relativi all'ID del sensore
+				hashkey = uri.substring(14); //it will be a string representing one number between "02" and "1a" 
 				value = Integer.parseInt(json.get("v").toString());
 				
 				ServerResource info = MainClass.cache.get(hashkey);
 				
-				if(info.getValue() == -1){ //il server ha inviato per la prima volta la risorsa
-					
+				if(info.getValue() == -1){ //it can be equal to -1 only if the server has never sent a data					
 					info.setValue(value);
-					info.setName(uri);			        			
-        			Resource newResource = new Resource("temperature_" + hashkey);
-        			// Add a new resource to the server. If the client ask for it now is available
-        			MainClass.server.add(newResource);
-        			
-        			System.out.println("New resource inserted in temperature_" + hashkey + " of value " + info.getValue());
+					info.setName(uri);	
+					
+					//Add a new resource to the proxy server.
+        			Resource newResource = new Resource("temperature_" + hashkey);       			
+        			MainClass.server.add(newResource);        			
+        			System.out.println("New resource inserted: temperature_" + hashkey);
         		}
         		
-        		else if(info.getValue() != value){ //Update value
-    				System.out.println("Update value from " + info.getValue() + " to " + value);
+        		else if(info.getValue() != value){ //Update old value
+    				//System.out.println("Update value from " + info.getValue() + " to " + value);
     				info.setValue(value);			        			
         			MainClass.cache.replace(hashkey, info);
         		}
 								
-			} catch (ParseException e) {
-				
+			} catch (ParseException e) {				
 				System.err.println("ERROR: Json format not correct");
 			}
     		
 		} else {
-			System.out.println("ERROR CODE: "+response.getCode().toString()+"\n"+response.getResponseText());
+			System.out.println("ERROR CODE: " + response.getCode().toString() + "\n" + response.getResponseText());
 		}
 		
 	}
 
 	
 	public void onError() {
-		System.err.println("-Failed--------");
-		//Come va gestita?
-		
+		System.err.println("-----Failed observation------");
+		//Come va gestita?		
 	}
 
 }
