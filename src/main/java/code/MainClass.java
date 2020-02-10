@@ -2,24 +2,24 @@ package code;
 
 import java.util.HashMap;
 
+import org.eclipse.californium.core.CoapServer;
+
 public class MainClass {
 	
-	protected static HashMap<String, ResourceInfo> cache = new HashMap<String, ResourceInfo>();
-	protected static ProxyServer server = new ProxyServer();
+	protected static HashMap<String, ServerResource> cache = new HashMap<String, ServerResource>();
+	//protected static ProxyServer server = new ProxyServer(); //è inutile creare una nuova classe proxy server
+	protected static CoapServer server = new CoapServer();
+	protected static ProxyClient client = new ProxyClient();
 	
 	public static void main(String args[]){
 		
-		//------------------------SERVER--------------------------------------
-		//Resource r = new Resource("prova");
-		//ResourceInfo info = new ResourceInfo(23.4, LocalDateTime.now(), "Cel");
+		//-----------------------PROXY-CLIENT--------------------------------------
 		
-		//cache.put(r.getName(), info);
-						
-		//server.add(r);		
-		server.start();
+		client.start();
+
+		//-----------------------PROXY-SERVER--------------------------------------
 		
-		//------------------------CLIENT--------------------------------------
-		ProxyClient.startObservation();
-		
+		server.start();		
+				
 	}
 }

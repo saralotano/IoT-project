@@ -30,21 +30,21 @@ public class Client {
         	       	
         	BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in)); 
         	
-        	System.out.println("Inserisci l'URI della risorsa da ottenere: \n");
-            String requestedResource = stdin.readLine();
+        	System.out.println("Insert resource URI: (e.g. coap://localhost/temperature_02)");
+            //String requestedResource = stdin.readLine();
+            String resourceName = stdin.readLine().split("/")[3]; //considero solamente "temperature_02"
+            System.out.println("nome " + resourceName);
             
             Request req = new Request(Code.GET);
-            req.getOptions().addUriPath(requestedResource); //path inserito dall'utente
-            												//il proxy server è trasparente al client (?)
-                        
-            CoapResponse response = client.advanced(req);	//corrisponde all'inviare una richiesta
+            req.getOptions().addUriPath(resourceName);                      
+            CoapResponse response = client.advanced(req);	//send GET request to proxy server
                     	
         	if (response!=null) {
     			
-    			if(response.getCode().toString().equals("2.05")){ //la richiesta è andata a buon fine
+    			if(response.getCode().toString().equals("2.05")){ //ok			
     				
     				JSONObject json = new JSONObject(response.getResponseText()); // Convert text to object
-        			System.out.println(" Resource value: \n " + json.toString(4)); //4 è lo spazio di indentazione
+        			System.out.println("Resource: \n" + json.toString(4)); //4 è lo spazio di indentazione
         			
     			}
     			else{

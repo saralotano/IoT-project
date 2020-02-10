@@ -1,69 +1,74 @@
 package code;
 
-import java.time.LocalDateTime;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP.Code;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.coap.Request;
 
 
-public class ProxyClient {
+public class ProxyClient{
 	
-	private static CoapClient client = new CoapClient();
-			
-	protected static void startObservation(){
+	private CoapClient client = new CoapClient();
+	private ResourceHandler handler = new ResourceHandler();
+
+	/*
+	//protected static void startObservation(){
 		
 		CoapHandler handler = new CoapHandler(){
 			
 	        	public void onLoad(CoapResponse response){
-	        		String resourceName = response.advanced().getSource().toString().substring(1); //il primo carattere è un /, con substring(1) lo rimuovo
-	        		if(!response.advanced().isError()) {
-	        			ResourceInfo info = MainClass.cache.get(resourceName);
+	        		
+	        		//String resourceName = response.advanced().getSource().toString().substring(1); //il primo carattere è un /, con substring(1) lo rimuovo
+	        		
+	        		if(!response.advanced().isError()) {	        			
 		        		
 		        		JSONParser parser = new JSONParser();
-		        		Double value = 0.0;
+		        		Integer value = 0;
+		        		String uri;
 		        		try {
 							JSONObject json = (JSONObject) parser.parse(response.getResponseText().toString());
-							value = Double.parseDouble(json.get("value").toString());
+							uri = json.get("n").toString();
+							value = Integer.parseInt(json.get("v").toString());
+							
+							ServerResource info = MainClass.cache.get(uri);
+							
+							if(info == null){ //il server ha inviato per la prima volta la risorsa
+								
+								info = new ServerResource(value, LocalDateTime.now());			        			
+			        			MainClass.cache.put(uri, info);			        			
+			        			Resource newResource = new Resource(uri);
+			        			// Add a new resource to the server. If the client ask for it now is available
+			        			MainClass.server.add(newResource);
+			        			
+			        			System.out.println("New resource inserted");
+			        			System.out.println("Resource uri " + uri);
+			        			System.out.println("Resource value " + info.getValue());
+			        		}
+			        		
+			        		else{ 
+			        			
+			        			if(info.getValue() != value){ //Update value
+			        				System.out.println("Update value");
+			        				info.setValue(value);
+				        			info.setTime(LocalDateTime.now());			        			
+			        			}
+			        			
+			        			else {
+			        				System.out.println("Aggiorno il timestamp del vecchio valore");
+				        			info.setTime(LocalDateTime.now());
+				        		}
+				        		
+			        			
+			        			MainClass.cache.replace(uri, info);
+			        		}
+							
+							
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							
+							System.err.println("ERROR: Json format not correct");
 						}
 		        	
-		        		if(info == null){ //primo valore da memorizzare	        			
-		        			info = new ResourceInfo(value, LocalDateTime.now(), "Cel"); //non so se Cel ha senso così hardcodato	        			
-		        			MainClass.cache.put(resourceName, info);
-		        			
-		        			Resource newResource = new Resource(resourceName);
-		        			// Add a new resource to the server. If the client ask for it now is available
-		        			MainClass.server.add(newResource);
-		        			
-		        			System.out.println("Inserita nuova risorsa");
-		        			System.out.println("Nome risorsa " + resourceName);
-		        			System.out.println("Valore risorsa " + info.getValue());
-		        		}
 		        		
-		        		else{ 
-		        			if(info != null && !info.getValue().equals(response.getResponseText())){ //aggiorno il nuovo valore
-		        				System.out.println("Aggiorno un nuovo valore");
-		        				info.setValue(value);
-			        			info.setTime(LocalDateTime.now());
-			        			info.setUnit("Cel"); //non so se va bene così hardcodato
-		        			
-		        			}
-		        			else {
-		        				System.out.println("Aggiorno il timestamp del vecchio valore");
-			        			info.setTime(LocalDateTime.now());
-			        		}
-		        			
-		        			MainClass.cache.replace(response.advanced().getSource().toString(), info);
-		        		}
 	        		} else {
 	        			System.out.println("ERROR CODE: "+response.getCode().toString()+"\n"+response.getResponseText());
 	        		}
@@ -73,17 +78,75 @@ public class ProxyClient {
 	        	
 	        	public void onError(){
 	        		System.err.println("-Failed--------");
+	        		//dobbiamo gestire questa cosa
 	        	}
 	        	
 	
 	        };
 	        	        	        
-	        startConnections(handler);
+	        //startConnections(handler);
 				
-		}
-
+		//}
+	*/
 	
+	
+	protected void start(){
+		
+		int sec = 1000;
+		
+		Request request;		
+		ServerResource resource;
+		
+		for(int i = 0; i < Config.uri.size(); i++){
+			
+			request = new Request(Code.GET);
+			request.setURI(Config.uri.get(i));
+			request.setObserve();
+			request.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
+			
+			resource = new ServerResource(client.observe(request, handler));
+			
+			//MainClass.cache.put(Config.uri.get(i), resource);
+			if(i < 14){ 
+				//aggiunge lo 0 davanti alle cifre tra 2 e f
+				//in questo modo la chiave dell'hashmap sarà costituita sempre da due caratteri e sarà più facile fare il parse
+				MainClass.cache.put("0"+Integer.toHexString(i+2), resource);
+			}
+			else
+				MainClass.cache.put(Integer.toHexString(i+2), resource);
+			//System.out.println("Chiavi hashmap " + MainClass.cache.toString());
+			
+			try {
+				Thread.sleep(sec);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
+	
+	/*
+	protected static void createRelations(){
+		
+		int sec = 3000;
+		Request request = new Request(Code.GET);
+		ServerResource resource = new ServerResource();
+		for(int i = 0; i < Config.uri.size(); i++){
+			request.setURI(Config.uri.get(i));
+			request.setObserve();
+			request.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
+			resource.setRelation();
+			MainClass.cache.put(Config.uri.get(i), )
+			
+			
+		}
+	}
+	*/
+
+	/*
 	private static void startConnections(CoapHandler handler){
+		
 		int sec = 3000;
 		Request request = new Request(Code.GET);
 		for(int i = 0; i < Config.uri.size(); i++) {
@@ -97,7 +160,7 @@ public class ProxyClient {
 				e.printStackTrace();
 			}
 		}	
-		/*
+		
 		Request request1 = new Request(Code.GET);
 		request1.setURI(Config.IPv6_SERVER_1);
 		request1.setObserve();
@@ -279,9 +342,9 @@ public class ProxyClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
+		
 	}
-	
+	*/
 	
 	
 }
