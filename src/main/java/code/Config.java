@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Config {
 	static List<String> uri = new ArrayList<String>();
+	static int MAX_RETRY = 2;
 	
 	static{
 		uri.add("coap://[abcd::c30c:0:0:2]:5683/temperature");
@@ -27,11 +28,7 @@ public class Config {
 		uri.add("coap://[abcd::c30c:0:0:13]:5683/temperature");
 		uri.add("coap://[abcd::c30c:0:0:14]:5683/temperature");
 		uri.add("coap://[abcd::c30c:0:0:15]:5683/temperature");
-		uri.add("coap://[abcd::c30c:0:0:16]:5683/temperature");
-		uri.add("coap://[abcd::c30c:0:0:17]:5683/temperature");
-		uri.add("coap://[abcd::c30c:0:0:18]:5683/temperature");
-		uri.add("coap://[abcd::c30c:0:0:19]:5683/temperature");
-		uri.add("coap://[abcd::c30c:0:0:1a]:5683/temperature");
+		
 	}
 
 }
