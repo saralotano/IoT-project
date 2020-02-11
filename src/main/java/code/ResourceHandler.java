@@ -7,6 +7,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class ResourceHandler implements CoapHandler{
+	boolean prova = true;
 
 	public void onLoad(CoapResponse response) {
 		
@@ -24,14 +25,16 @@ public class ResourceHandler implements CoapHandler{
 				
 				ServerResource info = MainClass.cache.get(hashkey);
 				
+				
 				if(info.getValue() == -1){ //it can be equal to -1 only if the server has never sent a data					
 					info.setValue(value);
 					info.setName(uri);	
 					
 					//Add a new resource to the proxy server.
-        			Resource newResource = new Resource("temperature_" + hashkey);       			
-        			MainClass.server.add(newResource);        			
-        			System.out.println("New resource inserted: temperature_" + hashkey);
+        			Resource newResource = new Resource("temperature_" + hashkey);  
+    				MainClass.server.add(newResource);        			
+    				//System.out.println("New resource inserted: temperature_" + hashkey);
+        			
         		}
         		
         		else if(info.getValue() != value){ //Update old value

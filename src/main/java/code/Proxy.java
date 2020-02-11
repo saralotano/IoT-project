@@ -33,7 +33,7 @@ public class Proxy{
 			
 			else
 				MainClass.cache.put(Integer.toHexString(i+2), resource);
-						
+			
 			try {
 				Thread.sleep(sec);
 			} catch (InterruptedException e) {
@@ -43,18 +43,20 @@ public class Proxy{
 			
 	}
 	
-	protected void restartObservation(String resourceName){
-		
+	protected void restartObservation(String resourceName){	
 		//resourceName is a string representing one number between "02" and "1a" 
 		String uri = "coap://[abcd::c30c:0:0:"+resourceName+"]:5683/temperature";
+		System.out.println("restartObservation for the resource " + uri + ". Try again in a while.");
 					
 		Request request = new Request(Code.GET);
 		request.setURI(uri);
 		request.setObserve();
 		request.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
 		
+		//update the resource with the new observe relation
 		ServerResource resource = MainClass.cache.get(resourceName);
-		resource.setRelation(client.observe(request, handler));
+		resource.getRelation().proactiveCancel();
+		resource.setValue(-1);
 		MainClass.cache.replace(resourceName, resource);
 		
 	}

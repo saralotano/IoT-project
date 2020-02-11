@@ -32,6 +32,7 @@ public class Config {
 		uri.add("coap://[abcd::c30c:0:0:18]:5683/temperature");
 		uri.add("coap://[abcd::c30c:0:0:19]:5683/temperature");
 		uri.add("coap://[abcd::c30c:0:0:1a]:5683/temperature");
+		
 	}
 
 }
