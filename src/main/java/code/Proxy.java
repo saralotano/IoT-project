@@ -1,6 +1,7 @@
 package code;
 
 import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.coap.CoAP.Code;
 import org.eclipse.californium.core.coap.MediaTypeRegistry;
 import org.eclipse.californium.core.coap.Request;
@@ -15,7 +16,11 @@ public class Proxy{
 		int sec = 1000; //only one observation request for second
 		
 		Request request;		
-		ServerResource resource;
+		ResourceHandler handler;
+		ObservedResource resource;
+		CoapObserveRelation relation;
+		String key;
+		
 		
 		for(int i = 0; i < Config.uri.size(); i++){
 			
@@ -26,18 +31,18 @@ public class Proxy{
 			
 			
 			//the key used in the cache will be a string representing the numbers between "02" and "1a" 
-			if(i < 14) {
-				ResourceHandler handler = new ResourceHandler( "0"+Integer.toHexString(i+2) );
-				resource = new ServerResource(client.observe(request, handler), handler);
-				MainClass.cache.put("0"+Integer.toHexString(i+2), resource);
-			}
+			if(i < 14) 
+				key = "0"+Integer.toHexString(i+2);
 			
-			else {
-				ResourceHandler handler = new ResourceHandler(Integer.toHexString(i+2));
-				resource = new ServerResource(client.observe(request, handler), handler);
-				MainClass.cache.put(Integer.toHexString(i+2), resource);
-
-			}
+			else 
+				key = Integer.toHexString(i+2);
+				
+			handler = new ResourceHandler(key);
+			relation = client.observe(request, handler);
+			resource = new ObservedResource(relation, handler);
+			MainClass.cache.put(key, resource);
+			
+			System.out.println("Sending observing request to "+ Config.uri.get(i));
 
 			try {
 				Thread.sleep(sec);
@@ -59,8 +64,7 @@ public class Proxy{
 		request.getOptions().setContentFormat(MediaTypeRegistry.APPLICATION_JSON).setAccept(MediaTypeRegistry.APPLICATION_JSON);
 		
 		//update the resource with the new observe relation
-		ServerResource resource = MainClass.cache.get(resourceName);
-
+		ObservedResource resource = MainClass.cache.get(resourceName);
 		resource.setRelation(client.observe(request, resource.getHandler()));
 		MainClass.cache.replace(resourceName, resource);	
 

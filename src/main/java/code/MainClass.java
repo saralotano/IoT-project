@@ -7,7 +7,7 @@ import org.eclipse.californium.core.CoapServer;
 
 public class MainClass {
 	
-	protected static HashMap<String, ServerResource> cache = new HashMap<String, ServerResource>();
+	protected static HashMap<String, ObservedResource> cache = new HashMap<String, ObservedResource>();
 	protected static CoapServer server = new CoapServer(); //used to handle GET requests from Client
 	protected static Proxy client = new Proxy(); //used to observe CoapServer resources
 	protected static Client coapClient = new Client(); //used to do GET requests

@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Config {
 	static List<String> uri = new ArrayList<String>();
+	static int MAX_RETRY = 2;
 	
 	static{
 		uri.add("coap://[abcd::c30c:0:0:2]:5683/temperature");

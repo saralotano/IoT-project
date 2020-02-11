@@ -56,8 +56,6 @@ public class Client {
                 		System.out.println("ERROR " + response.getCode().name() + ". Try again.");
                 	}
                 	
-                    	
-                    
             	}
         	}
         }

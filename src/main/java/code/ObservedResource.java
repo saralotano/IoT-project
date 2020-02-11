@@ -2,14 +2,14 @@ package code;
 
 import org.eclipse.californium.core.CoapObserveRelation;
 
-public class ServerResource {
+public class ObservedResource {
 	
 	private ResourceHandler handler;
 	private CoapObserveRelation relation;
 	private Integer value;
 	private String name;
 	
-	public ServerResource(CoapObserveRelation r, ResourceHandler h){
+	public ObservedResource(CoapObserveRelation r, ResourceHandler h){
 		
 		handler = h;
 		relation = r;
@@ -44,5 +44,10 @@ public class ServerResource {
 	protected void setValue(Integer d){
 		this.value = d;
 	}
-
+	
+	@Override
+	public void finalize(){
+		this.relation.proactiveCancel();
+	}
+	
 }
