@@ -8,6 +8,13 @@ import org.json.simple.parser.ParseException;
 
 public class ResourceHandler implements CoapHandler{
 
+	protected String resourceKey;
+	protected int max_retry = 4;
+	
+	public ResourceHandler(String key) {
+		resourceKey = key;
+	}
+	
 	public void onLoad(CoapResponse response) {
 		
 		if(!response.advanced().isError()) {	     			
@@ -53,6 +60,15 @@ public class ResourceHandler implements CoapHandler{
 	
 	public void onError() {
 		System.err.println("-----Failed observation------");
+		//chiamare la restartObservation usando la chiave key
+		if(max_retry == 0)
+			System.out.println("Resource temperature_"+resourceKey+" unreachable");
+		else {
+			max_retry--;
+			System.out.println("Remaining tentative: "+max_retry);
+			MainClass.client.restartObservation(resourceKey);
+		}
+			
 		//Come va gestita?		
 	}
 
