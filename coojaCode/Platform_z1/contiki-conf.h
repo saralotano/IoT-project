@@ -52,7 +52,7 @@
 #endif
 
 #ifndef NETSTACK_CONF_RDC
-#define NETSTACK_CONF_RDC           nullrdc_driver //contikimac_driver //IMPORTANTE
+#define NETSTACK_CONF_RDC           nullrdc_driver //Default value: contikimac_driver
 #endif
 
 #ifndef NETSTACK_CONF_FRAMER
@@ -185,7 +185,7 @@
 
 /* Handle 10 routes    */
 #ifndef UIP_CONF_MAX_ROUTES
-#define UIP_CONF_MAX_ROUTES             25 // 15
+#define UIP_CONF_MAX_ROUTES             25 //Default value: 15
 #endif
 
 #define UIP_CONF_ND6_SEND_RA            0
@@ -213,7 +213,7 @@
 #define UIP_CONF_IP_FORWARD                     1
 
 #ifndef UIP_CONF_BUFFER_SIZE
-#define UIP_CONF_BUFFER_SIZE                    108	// 108
+#define UIP_CONF_BUFFER_SIZE                    108	
 #endif
 
 #endif /* NETSTACK_CONF_WITH_IPV6 */
