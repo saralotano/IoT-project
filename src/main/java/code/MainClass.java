@@ -18,7 +18,7 @@ public class MainClass {
 		client.start(); 
 		
 		System.out.println("STARTING PROXY - SERVER SIDE");
-		server.start();		
+		server.start();	
 		
 		System.out.println("STARTING COAP CLIENT");
 		coapClient.doGETRequest();

@@ -4,11 +4,14 @@ import org.eclipse.californium.core.CoapObserveRelation;
 
 public class ServerResource {
 	
+	private ResourceHandler handler;
 	private CoapObserveRelation relation;
 	private Integer value;
 	private String name;
 	
-	public ServerResource(CoapObserveRelation r){
+	public ServerResource(CoapObserveRelation r, ResourceHandler h){
+		
+		handler = h;
 		relation = r;
 		value = -1;
 		name = "";
@@ -24,6 +27,10 @@ public class ServerResource {
 	
 	protected String getName(){
 		return this.name;
+	}
+	
+	protected ResourceHandler getHandler() {
+		return this.handler;
 	}
 	
 	protected void setRelation(CoapObserveRelation r){

@@ -15,14 +15,26 @@ public class Resource extends CoapResource{
 
 	
 	private static String retrieveResource(String key){
-		
 		ServerResource info = MainClass.cache.get(key);
+		String res;
 		
-		JSONObject json = new JSONObject();			
-		json.put("n", info.getName());
-		json.put("v", info.getValue());
- 
-		return json.toString();
+		//info != null means that it exists a CoapObserveRelation between the Proxy and the requested resource
+		//info.getValue() == -1 means that the proxy has never received the first data for that resource 
+		//in this case the proxy will send another observe request to the server exposing the requested resource
+		if(info != null && info.getValue() == -1){
+			
+			info.getRelation().proactiveCancel();			
+			MainClass.client.restartObservation(key);
+			res = "Sending a new observe request. Please try after a while.";
+		}
+		else{
+		
+			JSONObject json = new JSONObject();			
+			json.put("n", info.getName());
+			json.put("v", info.getValue());
+			res = json.toString();
+		}
+		return res;
 
 	}
 	

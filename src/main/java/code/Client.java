@@ -49,15 +49,7 @@ public class Client {
                     
                     else if(response.getCode().name().toString().equals("NOT_FOUND")){
                     	                   	                    	
-                    	String hashkey = resourceName.split("_")[1]; 
-                    	ServerResource info = MainClass.cache.get(hashkey);
-                    	
-                    	if(info != null){
-                    		MainClass.client.restartObservation(hashkey);
-                    	}
-                    	else{
-                    		System.out.println("ERROR " + response.getCode().name() + ". The specified URI does not belong to any resource");
-                    	}
+                    	System.out.println("ERROR: Resource " + response.getCode().name() );
                     	                   	
                 	}
                 	else{
