@@ -24,7 +24,8 @@
 #undef UIP_CONF_BUFFER_SIZE 
 #define UIP_CONF_BUFFER_SIZE 280 
 
-// Trickle parameters
+/* Trickle parameters*/
+
 #undef RPL_CONF_DIO_REDUNDANCY 
 #define RPL_CONF_DIO_REDUNDANCY 1
 
@@ -33,5 +34,6 @@
 
 #undef RPL_CONF_DIO_INTERVAL_DOUBLINGS 
 #define RPL_CONF_DIO_INTERVAL_DOUBLINGS 4
+
 
 #endif

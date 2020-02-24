@@ -55,7 +55,6 @@
 #include <ctype.h>
 
 #define DEBUG DEBUG_NONE
-//#define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
 
 static uip_ipaddr_t prefix;
@@ -447,7 +446,7 @@ int count = 0;
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     count = uip_ds6_route_num_routes();
     if(count == 20) {
-      printf("detected %d\n", count);
+      printf("DETECTED %d ROUTES\n", count);
       PROCESS_YIELD();
     } else 
       etimer_set(&et, CLOCK_SECOND);
