@@ -7,7 +7,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class ResourceHandler implements CoapHandler{
-	boolean prova = true;
 
 	protected String resourceKey;
 	protected int max_retry = Config.MAX_RETRY;
@@ -40,7 +39,7 @@ public class ResourceHandler implements CoapHandler{
 					
 					//Add a new resource to the proxy server.
         			Resource newResource = new Resource("temperature_" + hashkey);  
-    				MainClass.server.add(newResource);        			
+    				MainClass.server.add(newResource);     
     				System.out.println("New resource inserted: temperature_" + hashkey);
         			
         		}
